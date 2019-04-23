@@ -437,6 +437,7 @@ MAV_TYPE Copter::get_frame_mav_type()
             return MAV_TYPE_HEXAROTOR;
         case AP_Motors::MOTOR_FRAME_OCTA:
         case AP_Motors::MOTOR_FRAME_OCTAQUAD:
+        case AP_Motors::MOTOR_FRAME_HOPFLYT:
             return MAV_TYPE_OCTOROTOR;
         case AP_Motors::MOTOR_FRAME_HELI:
         case AP_Motors::MOTOR_FRAME_HELI_DUAL:
@@ -461,6 +462,8 @@ const char* Copter::get_frame_string()
     switch ((AP_Motors::motor_frame_class)g2.frame_class.get()) {
         case AP_Motors::MOTOR_FRAME_QUAD:
             return "QUAD";
+        case AP_Motors::MOTOR_FRAME_HOPFLYT:
+            return "HOPFLYT";
         case AP_Motors::MOTOR_FRAME_HEXA:
             return "HEXA";
         case AP_Motors::MOTOR_FRAME_Y6:
@@ -524,6 +527,11 @@ void Copter::allocate_motors(void)
         case AP_Motors::MOTOR_FRAME_TAILSITTER:
             motors = new AP_MotorsTailsitter(copter.scheduler.get_loop_rate_hz());
             motors_var_info = AP_MotorsTailsitter::var_info;
+            break;
+        case AP_Motors::MOTOR_FRAME_HOPFLYT:
+            motors = new AP_MotorsMatrix(copter.scheduler.get_loop_rate_hz());
+            motors_var_info = AP_MotorsMatrix::var_info;
+            AP_Param::set_frame_type_flags(AP_PARAM_FRAME_HOPFLYT);
             break;
 #else // FRAME_CONFIG == HELI_FRAME
         case AP_Motors::MOTOR_FRAME_HELI_DUAL:
